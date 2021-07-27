@@ -1,6 +1,13 @@
 import sys
 from typing import Counter
 
+
+def count_calls(fn):
+    def _counting(*args, **kwargs):
+        _counting.calls += 1
+        return fn(*args, **kwargs)
+    _counting.calls = 0
+    return _counting
 class Calculator():
 
     def take_expresion(self):
@@ -44,13 +51,6 @@ class Calculator():
                 num = 0
         return sum(stack)
     
-    def count_calls(fn):
-        def _counting(*args, **kwargs):
-            _counting.calls += 1
-            return fn(*args, **kwargs)
-        _counting.calls = 0
-        return _counting
-    
     def add(self,a,b):
         a=+b
         return a    
@@ -70,4 +70,4 @@ class Calculator():
 cal= Calculator()
 s=cal.take_expresion()
 print(cal.calculate(s))
-print(cal.divide.calls)
+print(cal.divide.calls) # pylint: disable=no-member
