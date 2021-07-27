@@ -20,7 +20,7 @@ class Calculator():
         return self.solver(arr)
     
     def solver(self, cal):
-        if len(s) == 0:
+        if len(cal) == 0:
             return 0
         stack = []
         sign = '+'
@@ -28,22 +28,46 @@ class Calculator():
         while len(cal) > 0:
             c = cal.pop(0)
             if c.isdigit():
-                num = num*10+int(c)
+                num = num*10+float(c)
             if len(cal) == 0 or (c == '+' or c == '-' or c == '*' or c == '/'):
                 if sign == '+':
+                    print("+")
                     stack.append(num)
                 elif sign == '-':
+                    print("-")
                     stack.append(-num)
                 elif sign == '*':
-                    stack[-1] = stack[-1]*num
+                    stack[-1] = self.multiply(stack[-1],num)
                 elif sign == '/':
-                    stack[-1] = int(stack[-1]/float(num))
+                    stack[-1] = self.divide(stack[-1],num)
                 sign = c
                 num = 0
-                if sign == ')':
-                    break
         return sum(stack)
+    
+    def count_calls(fn):
+        def _counting(*args, **kwargs):
+            _counting.calls += 1
+            return fn(*args, **kwargs)
+        _counting.calls = 0
+        return _counting
+    
+    def add(self,a,b):
+        a=+b
+        return a    
+    
+    @count_calls
+    def multiply(self,a,b):
+        a=a*b
+        return a
+
+    @count_calls
+    def divide(self,a,b):
+        if(b==0):
+            raise ZeroDivisionError("can't divided by zero")
+        a=a/b
+        return a
     
 cal= Calculator()
 s=cal.take_expresion()
 print(cal.calculate(s))
+print(cal.divide.calls)
