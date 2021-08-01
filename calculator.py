@@ -1,73 +1,114 @@
-import sys
-from typing import Counter
+import argparse
+from sys import path
+# from typing import Protocol,ContextManager,runtime_checkable
 
+def create_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-f", default= None ,help = "equation file")
+    args = parser.parse_args()
+    return args
 
-def count_calls(fn):
-    def _counting(*args, **kwargs):
-        _counting.calls += 1
-        return fn(*args, **kwargs)
-    _counting.calls = 0
-    return _counting
+def take_expresion(file_name) -> str:
+    try: 
+        with open(file_name,'r') as f:
+            return f.read()
+
+    except (FileNotFoundError, TypeError) :
+        print('file is not exsist')
+        print("write your expression:")
+        equation = input("> ") 
+        return equation
+
+    
 class Calculator():
 
-    def take_expresion(self):
-        try: 
-            with open(sys.argv[1], 'r') as f:
-                eqesioin = f.read()
-        except IndexError:
-            print('file is not exsist')
-            print("write your expression:")
-            eqesioin = input("> ")
-        return eqesioin
-
-    def calculate(self,eqesioin):
-        arr = []
-        for c in eqesioin:
-            arr.append(c)
-        return self.solver(arr)
+    def calculate(self,equation: str) -> float:
+        equation_list = []
+        for c in equation:
+            equation_list.append(c)
+        return self.solver(equation_list)
     
-    def solver(self, cal):
-        if len(cal) == 0:
+    def solver(self, PreCalculateList: list)-> float:
+
+        if len(PreCalculateList) == 0:
             return 0
+
         stack = []
         sign = '+'
         num = 0
-        while len(cal) > 0:
-            c = cal.pop(0)
-            if c.isdigit():
+        decimals =0
+
+        while len(PreCalculateList) > 0:
+            c = PreCalculateList.pop(0)
+
+            if c.isdigit() and sign != '.':
                 num = num*10+float(c)
-            if len(cal) == 0 or (c == '+' or c == '-' or c == '*' or c == '/'):
+
+            if c.isdigit() and sign == '.':
+                decimals +=1
+                num += (float(c))*(0.10**decimals)
+
+            if len(PreCalculateList) == 0 or (c == '+' or c == '-' or c == '*' or c == '/' or c == '.'):
                 if sign == '+':
-                    print("+")
                     stack.append(num)
+
                 elif sign == '-':
-                    print("-")
                     stack.append(-num)
+
                 elif sign == '*':
                     stack[-1] = self.multiply(stack[-1],num)
+
                 elif sign == '/':
                     stack[-1] = self.divide(stack[-1],num)
+
+                elif sign == '.':
+                    stack.append(num)
+
+                decimals =0
                 sign = c
                 num = 0
-        return sum(stack)
-    
-    def add(self,a,b):
-        a=+b
+        return self.sum(stack)
+
+
+    def sum(self,stack: list) -> float:
+        if len(stack)==1:
+            return stack[0]
+
+        sum = stack[0]
+        for num in range(len(stack)-1):
+            if stack[num+1] > 0:
+                sum = self.add(sum,stack[num+1])
+            elif stack[num+1] < 0:
+                sum = self.subtract(sum,stack[num+1])
+        return sum
+
+
+    def add(self,a: float,b: float) -> float:
+        a+=b
         return a    
     
-    @count_calls
-    def multiply(self,a,b):
+
+    def subtract(self,a: float,b: float) -> float:
+        a+=b
+        return a    
+
+
+    def multiply(self,a: float,b: float) -> float:
         a=a*b
         return a
 
-    @count_calls
-    def divide(self,a,b):
+
+    def divide(self,a: float,b: float) -> float:
         if(b==0):
             raise ZeroDivisionError("can't divided by zero")
         a=a/b
         return a
-    
-cal= Calculator()
-s=cal.take_expresion()
-print(cal.calculate(s))
-print(cal.divide.calls) # pylint: disable=no-member
+
+def start_calculator():
+    args = create_parser()
+    salusion=take_expresion(args.f)
+    cal= Calculator()
+    print(cal.calculate(salusion))
+
+if __name__ == '__main__':
+    start_calculator()
