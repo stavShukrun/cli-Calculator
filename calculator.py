@@ -19,6 +19,12 @@ def take_expresion(file_name) -> str:
         equation = input("> ") 
         return equation
 
+def count_calls(operation):
+    def _counting(*args, **kwargs):
+        _counting.count_operation += 1
+        return operation(*args, **kwargs)
+    _counting.count_operation = 0
+    return _counting
     
 class Calculator():
 
@@ -83,21 +89,25 @@ class Calculator():
         return sum
 
 
+    @count_calls
     def add(self,a: float,b: float) -> float:
         a+=b
         return a    
     
 
+    @count_calls
     def subtract(self,a: float,b: float) -> float:
         a+=b
         return a    
 
 
+    @count_calls
     def multiply(self,a: float,b: float) -> float:
         a=a*b
         return a
 
 
+    @count_calls
     def divide(self,a: float,b: float) -> float:
         if(b==0):
             raise ZeroDivisionError("can't divided by zero")
@@ -109,6 +119,7 @@ def start_calculator():
     salusion=take_expresion(args.f)
     cal= Calculator()
     print(cal.calculate(salusion))
+    print(cal.add.count_operation) # pylint: disable=no-member
 
 if __name__ == '__main__':
     start_calculator()
