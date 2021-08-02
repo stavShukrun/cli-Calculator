@@ -11,13 +11,15 @@ def create_parser():
 def take_expresion(file_name) -> str:
     try: 
         with open(file_name,'r') as f:
-            return f.read()
+            lines = f.read().splitlines()
+            for equation in lines:
+                yield equation
 
     except (FileNotFoundError, TypeError) :
         print('file is not exsist')
         print("write your expression:")
         equation = input("> ") 
-        return equation
+        yield equation
 
     
 class Calculator():
@@ -108,7 +110,8 @@ def start_calculator():
     args = create_parser()
     salusion=take_expresion(args.f)
     cal= Calculator()
-    print(cal.calculate(salusion))
+    for s in salusion:
+        print(cal.calculate(s))
 
 if __name__ == '__main__':
     start_calculator()
