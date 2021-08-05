@@ -30,9 +30,9 @@ class Calculator():
             equation_list.append(c)
         return self.solver(equation_list)
     
-    def solver(self, PreCalculateList: list)-> float:
+    def solver(self, pre_calculate_list: list)-> float:
 
-        if len(PreCalculateList) == 0:
+        if len(pre_calculate_list) == 0:
             return 0
 
         stack = []
@@ -40,8 +40,8 @@ class Calculator():
         num = 0
         decimals =0
 
-        while len(PreCalculateList) > 0:
-            c = PreCalculateList.pop(0)
+        while len(pre_calculate_list) > 0:
+            c = pre_calculate_list.pop(0)
 
             if c.isdigit() and sign != '.':
                 num = num*10+float(c)
@@ -50,7 +50,7 @@ class Calculator():
                 decimals +=1
                 num += (float(c))*(0.10**decimals)
 
-            if len(PreCalculateList) == 0 or (c == '+' or c == '-' or c == '*' or c == '/' or c == '.'):
+            if len(pre_calculate_list) == 0 or (c == '+' or c == '-' or c == '*' or c == '/' or c == '.'):
                 if sign == '+':
                     stack.append(num)
 
