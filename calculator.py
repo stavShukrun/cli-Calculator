@@ -1,5 +1,5 @@
 import argparse
-from sys import path
+import functools
 # from typing import Protocol,ContextManager,runtime_checkable
 
 def create_parser():
@@ -8,7 +8,7 @@ def create_parser():
     args = parser.parse_args()
     return args
 
-def take_expresion(file_name) -> str:
+def take_expresion(file_name: str) -> str:
     try: 
         with open(file_name,'r') as f:
             return f.read()
@@ -25,7 +25,7 @@ def count_calls(operation):
         return operation(*args, **kwargs)
     _counting.count_operation = 0
     return _counting
-    
+
 class Calculator():
 
     def calculate(self,equation: str) -> float:
@@ -34,9 +34,9 @@ class Calculator():
             equation_list.append(c)
         return self.solver(equation_list)
     
-    def solver(self, PreCalculateList: list)-> float:
+    def solver(self, pre_calculate_list: list)-> float:
 
-        if len(PreCalculateList) == 0:
+        if len(pre_calculate_list) == 0:
             return 0
 
         stack = []
@@ -44,8 +44,8 @@ class Calculator():
         num = 0
         decimals =0
 
-        while len(PreCalculateList) > 0:
-            c = PreCalculateList.pop(0)
+        while len(pre_calculate_list) > 0:
+            c = pre_calculate_list.pop(0)
 
             if c.isdigit() and sign != '.':
                 num = num*10+float(c)
@@ -54,7 +54,7 @@ class Calculator():
                 decimals +=1
                 num += (float(c))*(0.10**decimals)
 
-            if len(PreCalculateList) == 0 or (c == '+' or c == '-' or c == '*' or c == '/' or c == '.'):
+            if len(pre_calculate_list) == 0 or (c == '+' or c == '-' or c == '*' or c == '/' or c == '.'):
                 if sign == '+':
                     stack.append(num)
 
@@ -75,7 +75,6 @@ class Calculator():
                 num = 0
         return self.sum(stack)
 
-
     def sum(self,stack: list) -> float:
         if len(stack)==1:
             return stack[0]
@@ -88,24 +87,20 @@ class Calculator():
                 sum = self.subtract(sum,stack[num+1])
         return sum
 
-
     @count_calls
     def add(self,a: float,b: float) -> float:
         a+=b
         return a    
-    
 
     @count_calls
     def subtract(self,a: float,b: float) -> float:
         a+=b
         return a    
 
-
     @count_calls
     def multiply(self,a: float,b: float) -> float:
         a=a*b
         return a
-
 
     @count_calls
     def divide(self,a: float,b: float) -> float:
@@ -119,7 +114,7 @@ def start_calculator():
     salusion=take_expresion(args.f)
     cal= Calculator()
     print(cal.calculate(salusion))
-    print(cal.add.count_operation) # pylint: disable=no-member
+    print(cal.add.count_operation + cal.subtract.count_operation +cal.multiply.count_operation + cal.divide.count_operation) # pylint: disable=no-member
 
 if __name__ == '__main__':
     start_calculator()
