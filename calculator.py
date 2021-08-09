@@ -1,6 +1,13 @@
 import argparse
-from sys import path
-# from typing import Protocol,ContextManager,runtime_checkable
+import time
+
+def measure_time(func):
+    def wrapper():
+        start_time = time.perf_counter()
+        func()
+        end_time = time.perf_counter()
+        print(f"Time needed: {end_time - start_time} seconds")
+    return wrapper
 
 def create_parser():
     parser = argparse.ArgumentParser()
@@ -19,9 +26,9 @@ def take_expresion(file_name) -> str:
         equation = input("> ") 
         return equation
 
-    
-class Calculator():
 
+class Calculator():
+    
     def calculate(self,equation: str) -> float:
         equation_list = []
         for c in equation:
@@ -86,7 +93,7 @@ class Calculator():
     def add(self,a: float,b: float) -> float:
         a+=b
         return a    
-    
+
 
     def subtract(self,a: float,b: float) -> float:
         a+=b
@@ -104,6 +111,7 @@ class Calculator():
         a=a/b
         return a
 
+@measure_time
 def start_calculator():
     args = create_parser()
     salusion=take_expresion(args.f)
