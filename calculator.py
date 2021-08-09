@@ -1,13 +1,13 @@
 import argparse
+from contextlib import contextmanager
 import time
 
-def measure_time(func):
-    def wrapper():
-        start_time = time.perf_counter()
-        func()
-        end_time = time.perf_counter()
-        print(f"Time needed: {end_time - start_time} seconds")
-    return wrapper
+@contextmanager
+def measure_time():
+    start_time = time.perf_counter()
+    yield
+    end_time = time.perf_counter()
+    print(f"Time needed: {end_time - start_time} seconds")
 
 def create_parser():
     parser = argparse.ArgumentParser()
@@ -111,12 +111,13 @@ class Calculator():
         a=a/b
         return a
 
-@measure_time
+
 def start_calculator():
-    args = create_parser()
-    salusion=take_expresion(args.f)
-    cal= Calculator()
-    print(cal.calculate(salusion))
+    with measure_time():
+        args = create_parser()
+        salusion=take_expresion(args.f)
+        cal= Calculator()
+        print(cal.calculate(salusion))
 
 if __name__ == '__main__':
     start_calculator()
