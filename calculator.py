@@ -1,6 +1,5 @@
 import argparse
 from sys import path
-# from typing import Protocol,ContextManager,runtime_checkable
 
 def create_parser():
     parser = argparse.ArgumentParser()
@@ -8,18 +7,18 @@ def create_parser():
     args = parser.parse_args()
     return args
 
-def take_expresion(file_name) -> str:
+def take_expresions(file_name) -> str:
     try: 
         with open(file_name,'r') as f:
-            lines = f.read().splitlines()
-            for equation in lines:
-                yield equation
+            lines = f.readlines()
+            for equations in lines:
+                yield equations
 
     except (FileNotFoundError, TypeError) :
         print('file is not exsist')
         print("write your expression:")
-        equation = input("> ") 
-        yield equation
+        equations = input("> ") 
+        yield equations
 
     
 class Calculator():
@@ -108,7 +107,7 @@ class Calculator():
 
 def start_calculator():
     args = create_parser()
-    salusion=take_expresion(args.f)
+    salusion=take_expresions(args.f)
     cal= Calculator()
     for s in salusion:
         print(cal.calculate(s))
