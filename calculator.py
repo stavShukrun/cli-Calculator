@@ -8,13 +8,14 @@ def create_parser():
     return args
 
 
-def take_expresion(file_name) -> str:
+def take_expresion(file_name: str) -> str:
     try: 
         with open(file_name,'r') as f:
             return f.read()
 
-    except (FileNotFoundError, TypeError) :
-        print('file is not exsist')
+    except (FileNotFoundError):
+        raise
+    except (TypeError):
         print("write your expression:")
         equation = input("> ") 
         return equation
@@ -40,6 +41,9 @@ class Calculator():
             
             if (c.isdigit() or c=='.') and equation_length != 1:
                 num.append(c)
+            
+            elif c.isalpha():
+                raise SyntaxError(f"{c} is not legal")
 
             elif c == '+' or c == '-' or c == '*' or c == '/' or equation_length == 1:
 
@@ -63,9 +67,6 @@ class Calculator():
                 
                 sign = c
                 num=[]
-                
-            else:
-                raise SyntaxError(f"{c} is not legal")
 
             equation_length -=1
         return self.sum(stack)
