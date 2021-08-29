@@ -11,8 +11,9 @@ def take_expresion(file_name: str) -> str:
         with open(file_name,'r') as f:
             return f.read()
 
-    except (FileNotFoundError, TypeError) :
-        print('file is not exsist')
+    except (FileNotFoundError):
+        raise
+    except (TypeError):
         print("write your expression:")
         equation = input("> ") 
         return equation
@@ -27,67 +28,68 @@ def count_calls(operation):
 class Calculator():
 
     def calculate(self,equation: str) -> float:
-        equation_list = []
-        for c in equation:
-            equation_list.append(c)
+        equation_list = list(equation)
         return self.solver(equation_list)
     
+
     def solver(self, pre_calculate_list: list)-> float:
 
-        if len(pre_calculate_list) == 0:
-            return 0
+        equation_length = len(pre_calculate_list)
+        if equation_length == 0:
+            raise IndexError('Empty File')
 
-        stack = []
+        stack =[]
+        num=[]
         sign = '+'
-        num = 0
-        decimals =0
+        for c in pre_calculate_list:
+            
+            if (c.isdigit() or c=='.') and equation_length != 1:
+                num.append(c)
+            
+            elif c.isalpha():
+                raise SyntaxError(f"{c} is not legal")
 
-        while len(pre_calculate_list) > 0:
-            c = pre_calculate_list.pop(0)
+            elif c == '+' or c == '-' or c == '*' or c == '/' or equation_length == 1:
 
-            if c.isdigit() and sign != '.':
-                num = num*10+float(c)
+                if equation_length == 1:
+                    num.append(c)
 
-            if c.isdigit() and sign == '.':
-                decimals +=1
-                num += (float(c))*(0.10**decimals)
+                temp=''.join(num)
 
-            if len(pre_calculate_list) == 0 or (c == '+' or c == '-' or c == '*' or c == '/' or c == '.'):
                 if sign == '+':
-                    stack.append(num)
+                    stack.append(float(temp))
 
                 elif sign == '-':
-                    stack.append(-num)
+                    negative_num = float(temp)
+                    stack.append(-negative_num)
 
                 elif sign == '*':
-                    stack[-1] = self.multiply(stack[-1],num)
+                    stack[-1] = (self.multiply(float(stack[-1]),float(temp)))
 
                 elif sign == '/':
-                    stack[-1] = self.divide(stack[-1],num)
-
-                elif sign == '.':
-                    stack.append(num)
-
-                decimals =0
+                    stack[-1] = self.divide(float(stack[-1]),float(temp))
+                
                 sign = c
-                num = 0
+                num=[]
+
+            equation_length -=1
         return self.sum(stack)
 
     def sum(self,stack: list) -> float:
-        if len(stack)==1:
-            return stack[0]
 
+        round_val = 4
         sum = stack[0]
         for num in range(len(stack)-1):
             if stack[num+1] > 0:
                 sum = self.add(sum,stack[num+1])
             elif stack[num+1] < 0:
                 sum = self.subtract(sum,stack[num+1])
-        return sum
+        return round(sum,round_val)
 
     @count_calls
     def add(self,a: float,b: float) -> float:
         a+=b
+
         return a    
 
     @count_calls
@@ -106,6 +108,7 @@ class Calculator():
             raise ZeroDivisionError("can't divided by zero")
         a=a/b
         return a
+
 
 def start_calculator():
     args = create_parser()
