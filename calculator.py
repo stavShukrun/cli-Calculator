@@ -1,6 +1,4 @@
 import argparse
-import functools
-# from typing import Protocol,ContextManager,runtime_checkable
 
 def create_parser():
     parser = argparse.ArgumentParser()
@@ -114,7 +112,9 @@ def start_calculator():
     salusion=take_expresion(args.f)
     cal= Calculator()
     print(cal.calculate(salusion))
-    print(cal.add.count_operation + cal.subtract.count_operation +cal.multiply.count_operation + cal.divide.count_operation) # pylint: disable=no-member
+    print(f" Total operations: {cal.add.count_operation + cal.subtract.count_operation + cal.multiply.count_operation + cal.divide.count_operation} \n",
+    f"Add operations: {cal.add.count_operation} \n",f"Subtract operations: {cal.subtract.count_operation} \n",f"Multiply operations: {cal.multiply.count_operation} \n",
+    f"Divide operations: {cal.divide.count_operation} \n") # pylint: disable=no-member
 
 if __name__ == '__main__':
     start_calculator()
