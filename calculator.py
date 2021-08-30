@@ -1,5 +1,4 @@
 import argparse
-from sys import path
 
 def create_parser():
     parser = argparse.ArgumentParser()
@@ -107,9 +106,9 @@ class Calculator():
 
 def start_calculator():
     args = create_parser()
-    salusion=take_expresions(args.f)
+    salusions=take_expresions(args.f)
     cal= Calculator()
-    for s in salusion:
+    for s in salusions:
         print(cal.calculate(s))
 
 if __name__ == '__main__':
