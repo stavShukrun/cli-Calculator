@@ -1,4 +1,11 @@
 import argparse
+from contextlib import contextmanager
+import time
+
+@contextmanager
+def measure_time():
+    start_time = time.perf_counter()
+    yield start_time
 
 
 def create_parser():
@@ -20,9 +27,9 @@ def take_expresion(file_name: str) -> str:
         equation = input("> ") 
         return equation
 
-    
-class Calculator():
 
+class Calculator():
+    
     def calculate(self,equation: str) -> float:
         equation_list = list(equation)
         return self.solver(equation_list)
@@ -108,10 +115,13 @@ class Calculator():
 
 
 def start_calculator():
-    args = create_parser()
-    salusion=take_expresion(args.f)
-    cal= Calculator()
-    print(cal.calculate(salusion))
+    with measure_time() as start_time:
+        args = create_parser()
+        salusion=take_expresion(args.f)
+        cal= Calculator()
+        print(cal.calculate(salusion))
+        end_time = time.perf_counter()
+        print(f"Time needed: {end_time - start_time} seconds")
 
 if __name__ == '__main__':
     start_calculator()
