@@ -5,9 +5,7 @@ import time
 @contextmanager
 def measure_time():
     start_time = time.perf_counter()
-    yield
-    end_time = time.perf_counter()
-    print(f"Time needed: {end_time - start_time} seconds")
+    yield start_time
 
 def create_parser():
     parser = argparse.ArgumentParser()
@@ -113,11 +111,13 @@ class Calculator():
 
 
 def start_calculator():
-    with measure_time():
+    with measure_time() as start_time:
         args = create_parser()
         salusion=take_expresion(args.f)
         cal= Calculator()
         print(cal.calculate(salusion))
+        end_time = time.perf_counter()
+        print(f"Time needed: {end_time - start_time} seconds")
 
 if __name__ == '__main__':
     start_calculator()
