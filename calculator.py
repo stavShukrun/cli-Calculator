@@ -1,6 +1,5 @@
 import argparse
 
-
 def create_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", default= None ,help = "equation file")
@@ -86,7 +85,6 @@ class Calculator():
 
     def add(self,a: float,b: float) -> float:
         a+=b
-
         return a    
 
 
@@ -108,6 +106,7 @@ class Calculator():
 
 
 def start_calculator():
+    
     args = create_parser()
     salusion=take_expresion(args.f)
     cal= Calculator()
