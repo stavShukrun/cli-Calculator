@@ -1,4 +1,7 @@
 import argparse
+import threading
+import time
+
 
 def create_parser():
     parser = argparse.ArgumentParser()
@@ -24,6 +27,15 @@ def count_calls(operation):
         return operation(*args, **kwargs)
     _counting.count_operation = 0
     return _counting
+
+def thread_additions():
+    t = threading.currentThread()
+    while getattr(t, "do_run", True):
+        cal =Calculator
+        number_of_addition = cal.add.count_operation # pylint: disable=no-member
+        print("background thread number of additions ",number_of_addition)
+        # threading.Timer(0.1, thread_additions).start()
+        time.sleep(0.1)
 
 class Calculator():
 
@@ -111,11 +123,14 @@ class Calculator():
 
 
 def start_calculator():
+    t = threading.Thread(target=thread_additions,)
+    t.start()
+    cal= Calculator()
     args = create_parser()
     salusion=take_expresion(args.f)
-    cal= Calculator()
     print(cal.calculate(salusion))
     print(f" Total operations: {cal.add.count_operation + cal.subtract.count_operation + cal.multiply.count_operation + cal.divide.count_operation} \n Add operations: {cal.add.count_operation} \n Subtract operations: {cal.subtract.count_operation} \n Multiply operations: {cal.multiply.count_operation} \n Divide operations: {cal.divide.count_operation} \n") # pylint: disable=no-member
+    t.do_run = False
 
 if __name__ == '__main__':
     start_calculator()
