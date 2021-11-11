@@ -1,6 +1,10 @@
+"""System module."""
 import argparse
+import concurrent.futures
 
 def create_parser():
+    """
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", default= None ,help = "equation file")
     args = parser.parse_args()
@@ -8,12 +12,14 @@ def create_parser():
 
 
 def take_expresion(file_name: str) -> str:
+    """
+    """
     try: 
         with open(file_name,'r') as f:
             return f.read()
 
-    except (FileNotFoundError):
-        raise
+    # except (FileNotFoundError):
+    #     raise
     except (TypeError):
         print("write your expression:")
         equation = input("> ") 
@@ -21,7 +27,9 @@ def take_expresion(file_name: str) -> str:
 
     
 class Calculator():
-
+    """
+    Calculator class
+    """
     def calculate(self,equation: str) -> float:
         equation_list = list(equation)
         return self.solver(equation_list)
@@ -37,10 +45,10 @@ class Calculator():
         num=[]
         sign = '+'
         for c in pre_calculate_list:
-            
+           
             if (c.isdigit() or c=='.') and equation_length != 1:
                 num.append(c)
-            
+          
             elif c.isalpha():
                 raise SyntaxError(f"{c} is not legal")
 
@@ -63,7 +71,7 @@ class Calculator():
 
                 elif sign == '/':
                     stack[-1] = self.divide(float(stack[-1]),float(temp))
-                
+
                 sign = c
                 num=[]
 
@@ -110,7 +118,11 @@ def start_calculator():
     args = create_parser()
     salusion=take_expresion(args.f)
     cal= Calculator()
-    print(cal.calculate(salusion))
+    with concurrent.futures.ThreadPoolExecutor() as executer:
+        results = executer.map(cal.calculate, salusion)
+    for result in results:
+        print(result)
 
 if __name__ == '__main__':
     start_calculator()
+    
