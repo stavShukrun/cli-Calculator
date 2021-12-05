@@ -11,19 +11,21 @@ def create_parser():
     return args
 
 
-def take_expresion(file_name: str) -> str:
+def take_expresions(file_name: str) -> str:
     """
     """
-    try: 
+    try:
         with open(file_name,'r') as f:
-            return f.read()
+            lines = f.readlines()
+            for equations in lines:
+                yield equations
 
     # except (FileNotFoundError):
     #     raise
     except (TypeError):
         print("write your expression:")
-        equation = input("> ") 
-        return equation
+        equations = input("> ") 
+        yield equations
 
     
 class Calculator():
@@ -116,10 +118,10 @@ class Calculator():
 def start_calculator():
     
     args = create_parser()
-    salusion=take_expresion(args.f)
+    salusions=take_expresions(args.f)
     cal= Calculator()
     with concurrent.futures.ThreadPoolExecutor() as executer:
-        results = executer.map(cal.calculate, salusion)
+        results = executer.map(cal.calculate, salusions)
     for result in results:
         print(result)
 
