@@ -1,12 +1,5 @@
 import argparse
-from contextlib import contextmanager
 import time
-
-@contextmanager
-def measure_time():
-    start_time = time.perf_counter()
-    yield start_time
-
 
 def create_parser():
     parser = argparse.ArgumentParser()
@@ -113,15 +106,33 @@ class Calculator():
         a=a/b
         return a
 
+class Timer():
+    def __init__(self) -> None:
+        self.start_time = None
+
+    def start(self):
+        self.start_time = time.perf_counter()
+
+    def stop(self):
+        elapsed_time = time.perf_counter() - self.start_time
+        self.start_time = None
+        print(f"Time needed: {elapsed_time:0.4f} seconds")
+
+    def __enter__(self):
+        """Start a new timer as a context manager"""
+        self.start()
+        return self
+
+    def __exit__(self, *exc_info):
+        """Stop the context manager timer"""
+        self.stop()
 
 def start_calculator():
-    with measure_time() as start_time:
+    with Timer():
         args = create_parser()
         salusion=take_expresion(args.f)
         cal= Calculator()
         print(cal.calculate(salusion))
-        end_time = time.perf_counter()
-        print(f"Time needed: {end_time - start_time} seconds")
 
 if __name__ == '__main__':
     start_calculator()
