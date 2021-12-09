@@ -3,24 +3,26 @@ import argparse
 import threading
 import time
 
-
 def create_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", default= None ,help = "equation file")
     args = parser.parse_args()
     return args
 
-def take_expresion(file_name: str) -> str:
-    try:
-        with open(file_name,'r') as expresion:
-            return expresion.read()
+
+def take_expresions(file_name: str) -> str:
+    try: 
+        with open(file_name,'r') as f:
+            lines = f.readlines()
+            for equations in lines:
+                yield equations
 
     # except (FileNotFoundError):
     #     raise FileNotFoundError("please check File")
     except (TypeError):
         print("write your expression:")
-        equation = input("> ")
-        return equation
+        equations = input("> ") 
+        yield equations
 
 def count_operations(operation):
     def _counting(*args, **kwargs):
@@ -131,8 +133,10 @@ def start_calculator():
     new_thread.start()
     cal= Calculator()
     args = create_parser()
-    salusion=take_expresion(args.f)
-    print(cal.calculate(salusion))
+    salusions=take_expresions(args.f)
+    cal= Calculator()
+    for s in salusions:
+        print(cal.calculate(s))
     print(f"""    Total operations: {cal.add.count_operation + cal.subtract.count_operation + cal.multiply.count_operation + cal.divide.count_operation}
     Add operations: {cal.add.count_operation}
     Subtract operations: {cal.subtract.count_operation}
