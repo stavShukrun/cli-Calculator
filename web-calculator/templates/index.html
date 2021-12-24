@@ -1,0 +1,12 @@
+<html>
+    <body>
+        <form action="/calculate" method="POST">
+            expression
+            <input type="text" name="expression">
+            <button type="submit" value="submit">submit</button>
+        </form>
+        {%if result%}
+        <p>result:{{result}}</p>
+        {%endif%}
+    </body>
+</html>
