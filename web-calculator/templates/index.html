@@ -5,8 +5,10 @@
             <input type="text" name="expression">
             <button type="submit" value="submit">submit</button>
         </form>
-        {%if result%}
-        <p>result:{{result}}</p>
+        {%if status == 'OK'%}
+        <p>status:{{status}} result:{{result}}</p>
+        {%else%}
+        <p>status:{{status}} error_message:{{error_message}}</p>
         {%endif%}
     </body>
 </html>
