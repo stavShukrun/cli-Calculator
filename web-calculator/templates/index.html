@@ -1,0 +1,14 @@
+<html>
+    <body>
+        <form action="/calculate" method="POST">
+            expression
+            <input type="text" name="expression">
+            <button type="submit" value="submit">submit</button>
+        </form>
+        {%if status == 'OK'%}
+        <p>status:{{status}} result:{{result}}</p>
+        {%else%}
+        <p>status:{{status}} error_message:{{error_message}}</p>
+        {%endif%}
+    </body>
+</html>
